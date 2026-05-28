@@ -2973,7 +2973,7 @@ void TileRenderer::renderTile(const FullTile& tile, const mce::MaterialPtr& mate
 		case SHAPE_FENCE_GATE:
 			t.addOffset(-0.5f, -0.5f, -0.5f);
 			for (int o = 0; o < 3; o++) {
-				constexpr float r = 0.0625F;
+				constexpr float r = 0.0625f;
 				if (o == 0) {
 					tileType->setShape(0.5f - r, 0.3f, 0.0f, 0.5f + r, 1.0f, r * 2.0f);
 				}
