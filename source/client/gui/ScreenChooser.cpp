@@ -7,7 +7,6 @@
 #include "screens/inventory/ChestScreen.hpp"
 #include "screens/inventory/FurnaceScreen.hpp"
 #include "screens/OptionsScreen.hpp"
-#include "screens/OptionsScreen_Console.hpp"
 #include "screens/CreateWorldScreen.hpp"
 #include "screens/ProgressScreen.hpp"
 #include "screens/CreditsScreen.hpp"

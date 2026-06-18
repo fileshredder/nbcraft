@@ -10,6 +10,7 @@ Container* CreativeScreen::creativeGrid = new SimpleContainer(72, "Item selectio
 
 CreativeScreen::CreativeScreen(Container* inventory) : ContainerScreen(new CreativeMenu(inventory, creativeGrid))
 {
+    m_screenType = SCREEN_GENERIC;
     m_imageHeight = 208;
     m_scrolled = 0.0f;
     m_bIsScrolling = false;

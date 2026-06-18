@@ -103,7 +103,9 @@ void NinecraftApp::_initRenderMaterials()
 void NinecraftApp::_initInput()
 {
 	m_bIsTouchscreen = platform()->isTouchscreen();
-	getOptions()->m_bUseController.set(platform()->hasGamepad());
+
+	resetInputMethod();
+
 	getOptions()->loadControls();
 	reloadInput();
 }
@@ -272,6 +274,7 @@ void NinecraftApp::onAppResumed()
 	Tesselator::instance.init();
     
 	m_pTextures->clear();
+	m_pTextures->setupAtlases(true);
 	_reloadTextures();
 	m_pFont->onGraphicsReset();
     
@@ -367,13 +370,10 @@ void NinecraftApp::update()
 
 	Multitouch::commit();
 
-	if (getOptions()->m_bUseController.get())
+	GameControllerHandler* pControllerHandler = platform()->getGameControllerHandler();
+	if (pControllerHandler)
 	{
-		GameControllerHandler* pControllerHandler = platform()->getGameControllerHandler();
-		if (pControllerHandler)
-		{
-			pControllerHandler->refresh();
-		}
+		pControllerHandler->refresh();
 	}
 
 	Minecraft::update();

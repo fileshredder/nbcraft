@@ -314,7 +314,7 @@ void Gui::handleClick(int clickID, int mouseX, int mouseY)
 		return;
 
 	// @TODO: add InGamePlayScreen at some point
-	if (m_pMinecraft->isTouchscreen())
+	if (m_pMinecraft->useTouchscreen())
     {
 		int cenX = GuiWidth / 2;
         int scaledMouseX = int(mouseX * GuiScale);
@@ -372,11 +372,11 @@ void Gui::handleScrollWheel(bool down)
 	m_pMinecraft->m_pLocalPlayer->m_pInventory->selectSlot(stackId);
 }
 
-void Gui::handleKeyPressed(int keyCode)
+void Gui::handleUserAction(const ActionInfo& info)
 {
 	Options* options = m_pMinecraft->getOptions();
 
-	if (options->isKey(KM_CRAFTING, keyCode))
+	if (options->isAction(AID_CRAFTING, info))
 	{
 		if (m_pMinecraft->getLocalPlayerGameMode()->isSurvivalType())
 			m_pMinecraft->setScreen(new InventoryScreen(m_pMinecraft->m_pLocalPlayer));
@@ -385,21 +385,21 @@ void Gui::handleKeyPressed(int keyCode)
 		return;
 	}
 
-	if (options->isKey(KM_INVENTORY, keyCode))
+	if (options->isAction(AID_INVENTORY, info))
 	{
 		m_pMinecraft->setScreen(new InventoryScreen(m_pMinecraft->m_pLocalPlayer));
 		return;
 	}
 
-	if (options->isKey(KM_FOG, keyCode))
+	if (options->isAction(AID_FOG, info))
 	{
 		Options& o = *m_pMinecraft->getOptions();
 		o.m_viewDistance.set((o.m_viewDistance.get() + 1) % 4);
 		return;
 	}
 
-	bool slotL = options->isKey(KM_SLOT_L, keyCode);
-	bool slotR = options->isKey(KM_SLOT_R, keyCode);
+	bool slotL = options->isAction(AID_SLOT_L, info);
+	bool slotR = options->isAction(AID_SLOT_R, info);
 	if (slotL || slotR)
 	{
 		int maxItems = getNumSlots() - 1;
@@ -424,10 +424,10 @@ void Gui::handleKeyPressed(int keyCode)
 		return;
 	}
 
-	if (options->isKey(KM_CHAT, keyCode) || options->isKey(KM_CHAT_CMD, keyCode))
+	if (options->isAction(AID_CHAT, info) || options->isAction(AID_CHAT_CMD, info))
 	{
 		if (!m_pMinecraft->m_pScreen)
-			m_pMinecraft->setScreen(new ChatScreen(m_pMinecraft->getOptions()->isKey(KM_CHAT_CMD, keyCode)));
+			m_pMinecraft->setScreen(new ChatScreen(m_pMinecraft->getOptions()->isAction(AID_CHAT_CMD, info)));
 	}
 }
 
@@ -439,7 +439,7 @@ void Gui::renderMessages(bool bShowAll)
 	if (!m_pMinecraft->m_pScreen)
 		scale = 2;
 
-	if (m_pMinecraft->isTouchscreen())
+	if (m_pMinecraft->useTouchscreen())
 		topEdge = 49;
 
 	if (m_pMinecraft->getOptions()->getUiTheme() == UI_CONSOLE)
@@ -828,7 +828,7 @@ void Gui::renderToolBar(float f, float alpha)
 	blit(-1 - hotbarWidth / 2 + 20 * inventory->m_selectedStackId, -23, 0, 22, 24, 22, 0, 0);
 
 	// chat and pause button for mobile devices
-	if (mc->isTouchscreen())
+	if (mc->useTouchscreen())
 	{
 		textures->loadAndBindTexture("gui/gui2.png");
 		

@@ -698,10 +698,13 @@
     <ClInclude Include="$(MC_ROOT)\source\client\gui\screens\DeathScreen_Console.hpp">
       <Filter>Header Files\GUI\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\client\gui\components\ScrollingPane.hpp">
+    <ClInclude Include="$(MC_ROOT)\source\client\player\input\InputMethod.hpp">
+      <Filter>Header Files\Player\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MC_ROOT)\source\client\gui\components\ItemPane.hpp">
       <Filter>Header Files\GUI\Components</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\client\gui\components\ItemPane.hpp">
+    <ClInclude Include="$(MC_ROOT)\source\client\gui\components\ScrollingPane.hpp">
       <Filter>Header Files\GUI\Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1252,10 +1255,10 @@
     <ClCompile Include="$(MC_ROOT)\source\client\gui\screens\DeathScreen_Console.cpp">
       <Filter>Source Files\GUI\Screens</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\client\gui\components\ScrollingPane.cpp">
+    <ClCompile Include="$(MC_ROOT)\source\client\gui\components\ItemPane.cpp">
       <Filter>Source Files\GUI\Components</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\client\gui\components\ItemPane.cpp">
+    <ClCompile Include="$(MC_ROOT)\source\client\gui\components\ScrollingPane.cpp">
       <Filter>Source Files\GUI\Components</Filter>
     </ClCompile>
   </ItemGroup>

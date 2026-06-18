@@ -17,7 +17,7 @@ ContainerScreen::ContainerScreen(ContainerMenu* menu)
     , m_bSplitStackThisTick(false)
     , m_slotDragStartTime(0)
 {
-    m_uiTheme = UI_UNIVERSAL;
+    m_screenType = SCREEN_UNIVERSAL;
     m_bRenderPointer = true;
 }
 
@@ -68,6 +68,9 @@ Slot* ContainerScreen::_findSlot()
 
 Slot* ContainerScreen::_findSlot(int mouseX, int mouseY)
 {
+    if (!m_pMenu)
+        return nullptr;
+
     for (std::vector<Slot*>::iterator it = m_pMenu->m_slots.begin(); it != m_pMenu->m_slots.end(); ++it)
     {
         Slot* slot = *it;
@@ -311,33 +314,34 @@ void ContainerScreen::slotClicked(const MenuPointer& pointer, MouseButtonType bu
     slotClicked(pointer, button, m_pMinecraft->m_pPlatform->shiftPressed());
 }
 
-void ContainerScreen::keyPressed(int keyCode)
+void ContainerScreen::handleUserAction(const ActionInfo& button)
 {
-    if (!_useController() && m_pMinecraft->getOptions()->isKey(KM_INVENTORY, keyCode))
+    Options& options = *m_pMinecraft->getOptions();
+    if (!_useController() && options.isAction(AID_INVENTORY, button))
     {
         m_pMinecraft->handleBack(false);
     }
-    else if (m_pMinecraft->getOptions()->isKey(KM_CONTAINER_QUICKMOVE, keyCode) && _useController())
+    else if (options.isAction(AID_CONTAINER_QUICKMOVE, button) && _useController())
     {
         slotClicked(m_menuPointer, MOUSE_BUTTON_LEFT, true);
     }
-    else if (m_pMinecraft->getOptions()->isKey(KM_CONTAINER_SPLIT, keyCode) && _useController())
+    else if (options.isAction(AID_CONTAINER_SPLIT, button) && _useController())
     {
         slotClicked(m_menuPointer, MOUSE_BUTTON_RIGHT, false);
     }
     else
     {
         if (_useController() &&
-                ((m_pMinecraft->getOptions()->isKey(KM_MENU_UP, keyCode) && _selectSlotInDirection(AreaNavigation::UP)) ||
-                (m_pMinecraft->getOptions()->isKey(KM_MENU_DOWN, keyCode) && _selectSlotInDirection(AreaNavigation::DOWN)) ||
-                (m_pMinecraft->getOptions()->isKey(KM_MENU_RIGHT, keyCode) && _selectSlotInDirection(AreaNavigation::RIGHT)) ||
-                (m_pMinecraft->getOptions()->isKey(KM_MENU_LEFT, keyCode) && _selectSlotInDirection(AreaNavigation::LEFT))))
+                ((options.isAction(AID_MENU_UP, button) && _selectSlotInDirection(AreaNavigation::UP)) ||
+                (options.isAction(AID_MENU_DOWN, button) && _selectSlotInDirection(AreaNavigation::DOWN)) ||
+                (options.isAction(AID_MENU_RIGHT, button) && _selectSlotInDirection(AreaNavigation::RIGHT)) ||
+                (options.isAction(AID_MENU_LEFT, button) && _selectSlotInDirection(AreaNavigation::LEFT))))
         {
             _playSelectSound();
             return;
         }
 
-        Screen::keyPressed(keyCode);
+        Screen::handleUserAction(button);
     }
 }
 
