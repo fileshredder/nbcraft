@@ -19,4 +19,5 @@ public:
     void pushCraftingScreen(Player*, const TilePos&) override;
     void pushTrapScreen(Player*, DispenserTileEntity*);
     void pushDeathScreen() override;
+    virtual void pushSavingScreen(bool) override;
 };
