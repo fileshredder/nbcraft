@@ -61,6 +61,76 @@ void EntityRenderer::onGraphicsReset()
 
 void EntityRenderer::renderFlame(const Entity& entity, const Vec3& pos, float a)
 {
+#ifdef ENH_NEW_FIRE_RENDERING	
+	Vec3 ePos(pos);
+
+	Lighting::turnOff(false);
+
+	int tex = Tile::fire->getTexture(Facing::NORTH);
+	int xt = (tex & 15) << 4;
+	int yt = tex & 240;
+	float u0 = (float)xt / 256.0f;
+	float u1 = ((float)xt + 15.99f) / 256.0f;
+	float v0 = (float)yt / 256.0f;
+	float v1 = ((float)yt + 15.99f) / 256.0f;
+
+	MatrixStack::Ref matrix = MatrixStack::World.push();
+
+	float s = entity.m_bbWidth * 1.4f; // bbWidth instead of e->m_hitbox.max.x
+	float h = entity.m_bbHeight / s;
+
+	matrix->translate(ePos);
+	matrix->scale(s);
+	matrix->rotate(-m_pDispatcher->m_rot.yaw, Vec3::UNIT_Y);
+	matrix->translate(Vec3(0.0f, 0.0f, -0.3f + (float)((int)h) * 0.02f));
+
+	bindTexture(C_TERRAIN_NAME);
+	Tesselator& t = Tesselator::instance;
+	float r = 0.5f;
+	constexpr float xo = 0.0f;
+	float yo = (float)(entity.m_pos.y - entity.m_hitbox.min.y);
+	float zo = 0.0f;
+	int step = 0;
+	currentShaderColor = Color::WHITE;
+	t.begin(12);
+	t.normal(Vec3::UNIT_Y); // this is required for HLSL shaders since we're using the entity shader
+
+	while (h > 0.0f)
+	{
+		if (step % 2 == 0) {
+			u0 = (float)xt / 256.0f;
+			u1 = ((float)xt + 15.99f) / 256.0f;
+			v0 = (float)yt / 256.0f;
+			v1 = ((float)yt + 15.99f) / 256.0f;
+		}
+		else {
+			u0 = (float)xt / 256.0f;
+			u1 = ((float)xt + 15.99f) / 256.0f;
+			v0 = ((float)yt + 16) / 256.0f;
+			v1 = ((float)yt + 16 + 15.99f) / 256.0f;
+		}
+
+		if (step / 2 % 2 == 0) {
+			float temp = u1;
+			u1 = u0;
+			u0 = temp;
+		}
+
+		t.vertexUV(r - xo, 0.0f - yo, zo, u1, v1);
+		t.vertexUV(-r - xo, 0.0f - yo, zo, u0, v1);
+		t.vertexUV(-r - xo, 1.4f - yo, zo, u0, v0);
+		t.vertexUV(r - xo, 1.4f - yo, zo, u1, v0);
+		h -= 0.45f;
+		yo -= 0.45f;
+		r *= 0.9f;
+		zo += 0.03f;
+		step++;
+	}
+
+	t.draw(m_materials.entity_alphatest_cull);
+
+	Lighting::turnOn(false);
+#else
 	Vec3 ePos(pos);
 	ePos.y -= entity.m_heightOffset; // Fixed fire rendering above player's head in third-person
 
@@ -83,7 +153,7 @@ void EntityRenderer::renderFlame(const Entity& entity, const Vec3& pos, float a)
 	matrix->scale(s);
 	matrix->rotate(-m_pDispatcher->m_rot.yaw, Vec3::UNIT_Y);
 	matrix->translate(Vec3(0.0f, 0.0f, -0.4f + (float)((int)h) * 0.02f));
-	
+
 	bindTexture(C_TERRAIN_NAME);
 	Tesselator& t = Tesselator::instance;
 	float r = 1.0f;
@@ -108,6 +178,7 @@ void EntityRenderer::renderFlame(const Entity& entity, const Vec3& pos, float a)
 	t.draw(m_materials.entity_alphatest_cull);
 
 	Lighting::turnOn(false);
+#endif
 }
 
 Level* EntityRenderer::getLevel() const
