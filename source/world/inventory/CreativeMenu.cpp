@@ -1,6 +1,7 @@
 #include "CreativeMenu.hpp"
 #include "Slot.hpp"
 #include "common/Utils.hpp"
+#include "compat/GameVersion.h"
 #include "world/tile/Tile.hpp"
 #include "world/item/Item.hpp"
 
@@ -66,7 +67,9 @@ const TileID creativeTiles[] =
     //TILE_PISTON_STICKY,
     //TILE_PISTON,
     TILE_FENCE,
+#if MC_VERSION >= MC_VER_BETA(1, 8, 0)
     TILE_FENCE_GATE,
+#endif
     TILE_LADDER,
     TILE_RAIL,
     TILE_RAIL_POWERED,
