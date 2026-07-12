@@ -73,9 +73,11 @@ public:
 	void renderArmor(bool topLeft);
 	void renderHunger(bool topLeft);
 	void renderBubbles(bool topLeft);
+	void renderOnSelectItemNameText(int width, int slot);
 	void renderProgressIndicator(int width, int height, float f);
 	void renderExperience();
 	void renderToolBar(float f, float alpha);
+	void resetItemNameOverlay();
 	int getNumSlots();					  // Gets the number of slots in the inventory. Includes the '...' if in touch mode.
 	int getNumUsableSlots();			  // Gets the number of usable slots in the inventory. Does not include the '...' if in touch mode.
 	RectangleArea getRectangleArea(bool b);
@@ -115,5 +117,6 @@ public:
 	bool field_A3C;
 	bool m_bRenderMessages;
     bool m_bRenderHunger;
+	float m_onscreenTimer;
 };
 

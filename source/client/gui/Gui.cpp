@@ -8,10 +8,8 @@
 
 //#include "Gui.hpp" // apparently this breaks building on clang or something
 #include "client/app/Minecraft.hpp"
-#include "client/gui/screens/inventory/CreativeScreen.hpp"
-#include "client/gui/screens/IngameBlockSelectionScreen.hpp"
+#include "client/locale/Language.hpp"
 #include "client/gui/screens/ChatScreen.hpp"
-#include "client/gui/screens/PauseScreen.hpp"
 #include "client/gui/screens/inventory/InventoryScreen.hpp"
 #include "client/renderer/entity/ItemRenderer.hpp"
 #include "client/renderer/renderer/RenderMaterialGroup.hpp"
@@ -63,6 +61,7 @@ Gui::Gui(Minecraft* pMinecraft)
     m_bRenderHunger = false;
 	m_feedbackMeshesBuilt = false;
 	m_animatedCharacterTimer = 0;
+	m_onscreenTimer = 2;
 
 	m_pMinecraft = pMinecraft;
 }
@@ -234,6 +233,8 @@ void Gui::render(float f, bool bHaveScreen, int mouseX, int mouseY)
 	renderToolBar(f, alpha);
 	matrix.release();
 
+	renderOnSelectItemNameText(GuiWidth, GuiHeight - 30); // 19
+
 	if (m_bRenderMessages)
 	{
 		renderMessages(false);
@@ -258,6 +259,15 @@ void Gui::tick()
 		field_A18--;
 
 	m_ticks++;
+
+	if (m_onscreenTimer < 2)
+	{
+		m_onscreenTimer += 0.025;
+		if (m_pMinecraft->getUiTheme() == UI_POCKET)
+		{
+			m_onscreenTimer += 0.05;
+		}
+	}
 
 	if (m_animatedCharacterTimer > 0)
 		m_animatedCharacterTimer--;
@@ -429,7 +439,10 @@ void Gui::handleClick(int clickID, int mouseX, int mouseY)
 			m_pMinecraft->getScreenChooser()->pushCreativeScreen(m_pMinecraft->m_pLocalPlayer);
 	}
 	else
+	{
 		m_pMinecraft->m_pLocalPlayer->m_pInventory->selectSlot(slot);
+		resetItemNameOverlay();
+	}
 }
 
 void Gui::handleScrollWheel(bool down)
@@ -450,6 +463,7 @@ void Gui::handleScrollWheel(bool down)
 	}
 
 	m_pMinecraft->m_pLocalPlayer->m_pInventory->selectSlot(stackId);
+	resetItemNameOverlay();
 }
 
 void Gui::handleUserAction(const ActionInfo& info)
@@ -501,6 +515,7 @@ void Gui::handleUserAction(const ActionInfo& info)
 			else
 				*stackId = maxItems;
 		}
+		resetItemNameOverlay();
 		return;
 	}
 
@@ -755,6 +770,49 @@ void Gui::_buildFeedbackMeshes()
 		t.vertex(radiusInner * Mth::cos(a), radiusInner * Mth::sin(a), 0);
 	}
 	m_feedbackInner = t.end("feedback_inner", false);
+}
+
+void Gui::renderOnSelectItemNameText(int width, int slot)
+{
+	int v10;	   // r7
+	int v11;	   // r5
+	width = GuiWidth;
+	slot = GuiHeight - 30;
+
+	if (m_pMinecraft->getUiTheme() == UI_POCKET)
+		slot = GuiHeight - 19;
+
+	if (m_pMinecraft->getUiTheme() == UI_CONSOLE)
+		slot = GuiHeight - 220;
+
+	if (m_onscreenTimer < 1.0) {
+		ItemStack sel = m_pMinecraft->m_pLocalPlayer->m_pInventory->getSelected();
+		if (sel) {
+			v10 = m_pMinecraft->m_pFont->width(Language::get(sel.getHovertextName()));
+			if (m_onscreenTimer <= 0.75) {
+				v11 = 255;
+			}
+			else {
+				v11 = (int)(float)(Mth::cubeSmoothStep((float)(0.25 - (float)(m_onscreenTimer - 0.75)) * 4.0) * 255.0);
+				if (!v11) {
+					return;
+				}
+			}
+			if (m_pMinecraft->getUiTheme() == UI_CONSOLE)
+			{
+				m_pMinecraft->m_pFont->drawScalableShadow(Language::get(sel.getHovertextName()), (float)(width / 2 - (v10 * 2) / 2), (float)(slot - 22), (v11 << 24) + 0xFFFFFF, 2.0f);
+			}
+			else
+			{
+				m_pMinecraft->m_pFont->drawShadow(Language::get(sel.getHovertextName()), (float)(width / 2 - v10 / 2), (float)(slot - 22), (v11 << 24) + 0xFFFFFF);
+			}
+		}
+	}
+}
+
+void Gui::resetItemNameOverlay()
+{
+	m_onscreenTimer = 0.0f;
 }
 
 void Gui::renderProgressIndicator(int width, int height, float f)

@@ -59,5 +59,10 @@ public:
 	{
 		return a + progress * (b - a);
 	}
+
+	static inline CONSTEXPR float cubeSmoothStep(float value) 
+	{ 
+		return (value * value) * (3.0f - (2.0f * value)); 
+	}
 };
 
