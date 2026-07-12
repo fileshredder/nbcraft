@@ -233,7 +233,10 @@ void Gui::render(float f, bool bHaveScreen, int mouseX, int mouseY)
 	renderToolBar(f, alpha);
 	matrix.release();
 
-	renderOnSelectItemNameText(GuiWidth, GuiHeight - 30); // 19
+	if (mc.getOptions()->m_itemTooltip.get())
+	{
+		renderOnSelectItemNameText(GuiWidth, GuiHeight); // Ported from PE 0.8.0.
+	}
 
 	if (m_bRenderMessages)
 	{
@@ -441,7 +444,7 @@ void Gui::handleClick(int clickID, int mouseX, int mouseY)
 	else
 	{
 		m_pMinecraft->m_pLocalPlayer->m_pInventory->selectSlot(slot);
-		resetItemNameOverlay();
+//		resetItemNameOverlay();
 	}
 }
 
@@ -463,7 +466,7 @@ void Gui::handleScrollWheel(bool down)
 	}
 
 	m_pMinecraft->m_pLocalPlayer->m_pInventory->selectSlot(stackId);
-	resetItemNameOverlay();
+//	resetItemNameOverlay();
 }
 
 void Gui::handleUserAction(const ActionInfo& info)
@@ -515,7 +518,7 @@ void Gui::handleUserAction(const ActionInfo& info)
 			else
 				*stackId = maxItems;
 		}
-		resetItemNameOverlay();
+	//	resetItemNameOverlay();
 		return;
 	}
 
@@ -534,7 +537,7 @@ void Gui::renderMessages(bool bShowAll)
 	if (!m_pMinecraft->m_pScreen)
 		scale = 2;
 
-	if (m_pMinecraft->useTouchscreen())
+	if (m_pMinecraft->getOptions()->getUiTheme() == UI_POCKET || m_pMinecraft->useTouchscreen())
 		topEdge = 49;
 
 	if (m_pMinecraft->getOptions()->getUiTheme() == UI_CONSOLE)
@@ -772,39 +775,38 @@ void Gui::_buildFeedbackMeshes()
 	m_feedbackInner = t.end("feedback_inner", false);
 }
 
-void Gui::renderOnSelectItemNameText(int width, int slot)
-{
-	int v10;	   // r7
-	int v11;	   // r5
+void Gui::renderOnSelectItemNameText(int width, int height)
+{  
+	int alpha;	   
 	width = GuiWidth;
-	slot = GuiHeight - 30;
+	height -= 30; // @PARITY-JAVA: Layout positioning taken from 1.4.6. 
 
 	if (m_pMinecraft->getUiTheme() == UI_POCKET)
-		slot = GuiHeight - 19;
+		height -= 19; // @PARITY-PE: 19 in 0.8.0.
 
 	if (m_pMinecraft->getUiTheme() == UI_CONSOLE)
-		slot = GuiHeight - 220;
+		height -= 220; // @PARITY-LCE: Layout positioning taken from TU7.
 
 	if (m_onscreenTimer < 1.0) {
 		ItemStack sel = m_pMinecraft->m_pLocalPlayer->m_pInventory->getSelected();
 		if (sel) {
-			v10 = m_pMinecraft->m_pFont->width(Language::get(sel.getHovertextName()));
+			int fontWidth = m_pMinecraft->m_pFont->width(Language::get(sel.getHovertextName()));
 			if (m_onscreenTimer <= 0.75) {
-				v11 = 255;
+				alpha = 255;
 			}
 			else {
-				v11 = (int)(float)(Mth::cubeSmoothStep((float)(0.25 - (float)(m_onscreenTimer - 0.75)) * 4.0) * 255.0);
-				if (!v11) {
+				alpha = (int)(float)(Mth::cubeSmoothStep((float)(0.25 - (float)(m_onscreenTimer - 0.75)) * 4.0) * 255.0);
+				if (!alpha) {
 					return;
 				}
 			}
 			if (m_pMinecraft->getUiTheme() == UI_CONSOLE)
 			{
-				m_pMinecraft->m_pFont->drawScalableShadow(Language::get(sel.getHovertextName()), (float)(width / 2 - (v10 * 2) / 2), (float)(slot - 22), (v11 << 24) + 0xFFFFFF, 2.0f);
+				m_pMinecraft->m_pFont->drawScalableShadow(Language::get(sel.getHovertextName()), (float)(width / 2 - (fontWidth * 2) / 2), (float)(height - 22), (alpha << 24) + 0xFFFFFF, 2.0f);
 			}
 			else
 			{
-				m_pMinecraft->m_pFont->drawShadow(Language::get(sel.getHovertextName()), (float)(width / 2 - v10 / 2), (float)(slot - 22), (v11 << 24) + 0xFFFFFF);
+				m_pMinecraft->m_pFont->drawShadow(Language::get(sel.getHovertextName()), (float)(width / 2 - fontWidth / 2), (float)(height - 22), (alpha << 24) + 0xFFFFFF);
 			}
 		}
 	}

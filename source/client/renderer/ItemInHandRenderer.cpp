@@ -394,6 +394,9 @@ void ItemInHandRenderer::tick()
 	if (item.isEmpty() && m_selectedItem.isEmpty())
 		bSameItem = true;
 
+    if (!bSameItem && !item.isEmpty())
+        m_pMinecraft->m_pGui->resetItemNameOverlay();
+
     // This isn't really needed anymore
     //if (!item.isEmpty() && !m_selectedItem.isEmpty())
     //{

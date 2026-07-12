@@ -101,6 +101,7 @@ Options::Options(Minecraft* mc, const std::string& folderPath) :
 	//, m_limitFramerate("gfx_fpslimit", "options.framerateLimit", 0, ValuesBuilder().add(performance.max").add("performance.balanced").add("performance.powersaver"))
 	//, m_bMipmaps("gfx_mipmaps", "options.mipmaps")
 	, m_animatedCharacter("gfx_animatedcharacter", "options.animatedCharacter", true)
+	, m_itemTooltip("gfx_itemtooltip", "options.itemTooltip", true)
 	, m_vSync("enableVsync", "options.enableVsync", true)
 {
 	add(OC_GAMEPLAY, m_difficulty);
@@ -142,6 +143,7 @@ Options::Options(Minecraft* mc, const std::string& folderPath) :
 	add(OC_VIDEO, m_logoType);
 	add(OC_VIDEO, m_hudSize);
 	add(OC_VIDEO, m_animatedCharacter);
+	add(OC_VIDEO, m_itemTooltip);
 	add(OC_VIDEO, m_hideGui);
 	add(OC_VIDEO, m_debugText);
 	add(OC_VIDEO, m_menuPanorama);

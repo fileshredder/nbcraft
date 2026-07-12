@@ -73,7 +73,7 @@ public:
 	void renderArmor(bool topLeft);
 	void renderHunger(bool topLeft);
 	void renderBubbles(bool topLeft);
-	void renderOnSelectItemNameText(int width, int slot);
+	void renderOnSelectItemNameText(int width, int height);
 	void renderProgressIndicator(int width, int height, float f);
 	void renderExperience();
 	void renderToolBar(float f, float alpha);

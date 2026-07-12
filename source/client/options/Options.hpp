@@ -567,6 +567,7 @@ public:
 	HUDSizeOption m_hudSize;
 	BoolOption m_classicCrafting;
 	BoolOption m_animatedCharacter;
+	BoolOption m_itemTooltip;
 	VsyncOption m_vSync;
 	ResourcePackStack m_resourcePacks;
 };
@@ -626,6 +627,7 @@ public:
 	OPTION(m_logoType);                    \
 	OPTION(m_hudSize);					   \
 	OPTION(m_animatedCharacter);           \
+	OPTION(m_itemTooltip)
 
 #define OPTIONS_LIST_VIDEO_EXPERIMENTAL    \
 	HEADER("Experimental");                \
