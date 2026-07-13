@@ -59,7 +59,8 @@ float LiquidTile::getBrightness(const LevelSource* level, const TilePos& pos) co
 
 int LiquidTile::getColor(const LevelSource* level, const TilePos& pos) const
 {
-	return 0x999999FF;
+//	return 0x999999FF; // Seems like notch was trying to grayscale water at one point for biome tinting unsuccessfully, or either he was trying to make water darker.
+	return 0xFFFFFFFF;
 }
 
 int LiquidTile::getDepth(Level* level, const TilePos& pos)

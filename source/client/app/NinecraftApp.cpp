@@ -17,6 +17,7 @@
 #include "client/gui/screens/AutosaveWarningScreen_Console.hpp"
 #include "client/renderer/FoliageColor.hpp"
 #include "client/renderer/GrassColor.hpp"
+#include "client/renderer/WaterColor.hpp"
 #include "client/renderer/Lighting.hpp"
 #include "client/renderer/PatchManager.hpp"
 #include "client/renderer/renderer/RenderMaterialGroup.hpp"
@@ -92,6 +93,9 @@ void NinecraftApp::_initTextures()
 
 	if (GrassColor::isAvailable()) GrassColor::init();
 	if (FoliageColor::isAvailable()) FoliageColor::init();
+#ifdef ENH_BIOME_TINTED_WATER
+	if (WaterColor::isAvailable()) WaterColor::init();
+#endif
 
 	LogoRenderer::singleton().init(this);
 }
@@ -163,6 +167,9 @@ void NinecraftApp::_reloadOptionalFeatures()
 	LevelRenderer::setArePlanetsAvailable(Resource::hasTexture("terrain/sun.png") && Resource::hasTexture("terrain/moon.png"));
 	GrassColor::setIsAvailable(Resource::hasTexture("misc/grasscolor.png"));
 	FoliageColor::setIsAvailable(Resource::hasTexture("misc/foliagecolor.png"));
+#ifdef ENH_BIOME_TINTED_WATER
+	WaterColor::setIsAvailable(Resource::hasTexture("misc/watercolor.png"));
+#endif
 	Gui::setIsVignetteAvailable(Resource::hasTexture("misc/vignette.png"));
 	EntityRenderer::setAreShadowsAvailable(Resource::hasTexture("misc/shadow.png"));
 }

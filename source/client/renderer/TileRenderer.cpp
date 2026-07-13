@@ -11,6 +11,7 @@
 #include "client/renderer/PatchManager.hpp"
 #include "client/renderer/GrassColor.hpp"
 #include "client/renderer/FoliageColor.hpp"
+#include "client/renderer/WaterColor.hpp"
 #include "client/renderer/renderer/RenderMaterialGroup.hpp"
 #include "world/tile/FireTile.hpp"
 #include "world/tile/RedStoneDustTile.hpp"
@@ -930,6 +931,16 @@ bool TileRenderer::tesselateWaterInWorld(Tile* tile1, const TilePos& pos)
 	LiquidTile* tile = (LiquidTile*)tile1;
 	bool bRenderFaceDown, bRenderFaceUp, bRenderSides[4];
 
+#ifdef ENH_BIOME_TINTED_WATER
+	int color = getTileColor(tile, pos);
+#else
+	int color = 0xFFFFFFFF;
+#endif
+
+	float r = float(GET_RED(color)) / 255.0f;
+	float g = float(GET_GREEN(color)) / 255.0f;
+	float b = float(GET_BLUE(color)) / 255.0f;
+
 	Tesselator& t = m_tessellator;
 
 	bRenderFaceDown = tile->shouldRenderFace(m_pTileSource, pos.above(), Facing::UP);
@@ -1010,7 +1021,7 @@ bool TileRenderer::tesselateWaterInWorld(Tile* tile1, const TilePos& pos)
 		texUV_5 = texUV_1 - texUV_4;
 		texUV_6 = texUV_2 - texUV_4;
 
-		t.color(bright, bright, bright);
+		t.color(bright * r, bright * g, bright * b);
 		texUV_7 = texUV_2 + texUV_4;
 		texUV_8 = texUV_1 + texUV_4;
 
@@ -1112,7 +1123,7 @@ label_8:
 
 		float brightMul = dir >= Facing::WEST ? 0.6f : 0.8f;
 		float bright = tile->getBrightness(m_pTileSource, TilePos(checkX, pos.y, checkZ));
-		t.color(bright* brightMul, bright* brightMul, bright* brightMul);
+		t.color(bright* brightMul * r, bright* brightMul * g, bright* brightMul * b);
 		t.vertexUV(vtxX1, float(pos.y) + height1, vtxZ1, texU_1, texV_1);
 		t.vertexUV(vtxX2, float(pos.y) + height2, vtxZ2, texU_2, texV_2);
 		t.vertexUV(vtxX2, float(pos.y) + 0.0f, vtxZ2, texU_2, texV_3);
@@ -3771,7 +3782,13 @@ int TileRenderer::getTileColor(Tile* tile, const TilePos& pos)
 		m_pTileSource->getBiomeSource()->getBiomeBlock(pos, 1, 1);
 		return FoliageColor::get(m_pTileSource->getBiomeSource()->field_4[0], m_pTileSource->getBiomeSource()->field_8[0]);
 	}
-
+#ifdef ENH_BIOME_TINTED_WATER
+	if ((tile == Tile::water || tile == Tile::calmWater) && m_pTileSource->getMaterial(pos) == Material::water && WaterColor::isAvailable())
+	{
+		m_pTileSource->getBiomeSource()->getBiomeBlock(pos, 1, 1);
+		return WaterColor::get(m_pTileSource->getBiomeSource()->field_4[0], m_pTileSource->getBiomeSource()->field_8[0]);
+	}
+#endif
 	return tile->getColor(m_pTileSource, pos);
 }
 

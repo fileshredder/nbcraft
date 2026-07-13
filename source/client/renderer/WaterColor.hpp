@@ -1,0 +1,22 @@
+#pragma once
+
+#include <stdint.h>
+
+#include "client/renderer/texture/TextureData.hpp"
+
+class WaterColor
+{
+public:
+	static bool isAvailable() { return _isAvailable; }
+	static void setIsAvailable(bool value) { _isAvailable = value; }
+
+	static void init();
+
+	static uint32_t get(float x, float y);
+
+
+private:
+	static bool _isAvailable;
+	static TextureData texture;
+};
+

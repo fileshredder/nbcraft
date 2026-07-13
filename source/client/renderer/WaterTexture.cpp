@@ -79,10 +79,18 @@ void WaterTexture::tick()
 
 		int r, g, b, a;
 
-		r = int(32.0f  + 32.0f * m);
-		g = int(64.0f  + 50.0f * m);
+#ifdef ENH_BIOME_TINTED_WATER
+		int grey = int(153.0f); // value taken from the unused grayscale value in getcolor in liquidtile.
+		r = grey;
+		g = grey;
+		a = int(146.0f + 50.0f * m);
+		b = grey;
+#else
+		r = int(32.0f + 32.0f * m);
+		g = int(64.0f + 50.0f * m);
 		a = int(146.0f + 50.0f * m);
 		b = 255;
+#endif
 		
 		m_pixels[i * 4 + 0] = uint8_t(r);
 		m_pixels[i * 4 + 1] = uint8_t(g);

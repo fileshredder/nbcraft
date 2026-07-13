@@ -56,6 +56,7 @@
 #define ENH_NEW_FEEDBACK_INDICATOR 	       // Use the new mesh-based interaction feedback indicator.
 #define ENH_FOV_MODIFIER 	               // Smooth FOV modifier - provides flying FOV boost and adjustable FOV slider
 #define ENH_NEW_FIRE_RENDERING             // Enables the newer fire animation on mobs and the player, that was added in Beta 1.6.
+//#define ENH_BIOME_TINTED_WATER		   // Enables unused code from Beta 1.6 to biome tint water using watercolor.png.
 
 // TODO: Implement this permanently?
 #define ENH_IMPROVED_SAVING     	       // Improve world saving. The original Minecraft doesn't always really save for some reason
